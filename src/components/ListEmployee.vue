@@ -3,7 +3,9 @@
     <main class="main">
       <header class="d-flex justify-content-between mb-3">
         <h3>Nhân viên</h3>
-        <button class="btn btn-primary">Thêm mới nhân viên</button>
+        <button @click="handleShowForm" class="btn btn-primary">
+          Thêm mới nhân viên
+        </button>
       </header>
       <div class="d-flex align-items-center justify-content-end gap-2 mb-3">
         <input
@@ -27,97 +29,28 @@
             <th colspan="2">Chức năng</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody
+          v-for="(employeeItem, index) in listEmployee"
+          :key="employeeItem.id"
+        >
           <tr>
-            <td>1</td>
-            <td>Nguyễn Văn A</td>
-            <td>28/02/1990</td>
-            <td>nvana@gmail.com</td>
-            <td>Ba Đình, Hà Nội</td>
+            <td>{{ index + 1 }}</td>
+            <td>{{ employeeItem.name }}</td>
+            <td>{{ employeeItem.dateOfbBirth }}</td>
+            <td>{{ employeeItem.email }}</td>
+            <td>{{ employeeItem.address }}</td>
             <td>
-              <div style="display: flex; align-items: center; gap: 8px">
+              <div
+                v-if="employeeItem.status"
+                style="display: flex; align-items: center; gap: 8px"
+              >
                 <div class="status status-active"></div>
                 <span> Đang hoạt động</span>
               </div>
-            </td>
-            <td>
-              <span class="button button-block">Chặn</span>
-            </td>
-            <td>
-              <span class="button button-edit">Sửa</span>
-            </td>
-            <td><span class="button button-delete">Xóa</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Trần Thị B</td>
-            <td>15/07/1985</td>
-            <td>ttb@gmail.com</td>
-            <td>Cầu Giấy, Hà Nội</td>
-            <td>
-              <div style="display: flex; align-items: center; gap: 8px">
+
+              <div v-else style="display: flex; align-items: center; gap: 8px">
                 <div class="status status-stop"></div>
                 <span> Ngừng hoạt động</span>
-              </div>
-            </td>
-            <td>
-              <span class="button button-block">Bỏ chặn</span>
-            </td>
-            <td>
-              <span class="button button-edit">Sửa</span>
-            </td>
-            <td><span class="button button-delete">Xóa</span></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Lê Văn C</td>
-            <td>03/10/2000</td>
-            <td>lvc@gmail.com</td>
-            <td>Hai Bà Trưng, Hà Nội</td>
-            <td>
-              <div style="display: flex; align-items: center; gap: 8px">
-                <div class="status status-stop"></div>
-                <span> Ngừng hoạt động</span>
-              </div>
-            </td>
-            <td>
-              <span class="button button-block">Bỏ chặn</span>
-            </td>
-            <td>
-              <span class="button button-edit">Sửa</span>
-            </td>
-            <td><span class="button button-delete">Xóa</span></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Phạm Thị D</td>
-            <td>20/05/1995</td>
-            <td>ptd@gmail.com</td>
-            <td>Hoàn Kiếm, Hà Nội</td>
-            <td>
-              <div style="display: flex; align-items: center; gap: 8px">
-                <div class="status status-active"></div>
-                <span> Đang hoạt động</span>
-              </div>
-            </td>
-            <td>
-              <span class="button button-block">Chặn</span>
-            </td>
-            <td>
-              <span class="button button-edit">Sửa</span>
-            </td>
-            <td><span class="button button-delete">Xóa</span></td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Ngô Văn E</td>
-            <td>12/11/1988</td>
-            <td>nve@gmail.com</td>
-            <td>Cầu Giấy, Hà Nội</td>
-            <td>
-              <div style="display: flex; align-items: center; gap: 8px">
-                <div class="status status-active"></div>
-                <span> Đang hoạt động</span>
               </div>
             </td>
             <td>
@@ -183,39 +116,34 @@
       </div>
     </div>
   </div>
+
+  <!-- Form quản lý nhân viên -->
+  <FormEmployee
+    v-if="isShowForm"
+    @onClose="handleCloseForm"
+    :listEmployee="listEmployee"
+  />
 </template>
 
 <script setup>
 import { reactive, ref } from "vue";
+import FormEmployee from "./FormEmployee.vue";
 
-const firstName = ref("");
-const rules = reactive([
-  (value) => {
-    if (value) return true;
+const listEmployee = reactive(
+  JSON.parse(localStorage.getItem("employees")) || []
+);
 
-    return "Tên không được để trống";
-  },
-]);
+const isShowForm = ref(false);
 
-const city = ref("");
-const cities = reactive([
-  "Hà Nội",
-  "Đà Nẵng",
-  "Hà Nam",
-  "Ninh Bình",
-  "Thanh Hóa",
-  "Nghệ An",
-  "Hà Giang",
-]);
+// Hàm mở form
+const handleShowForm = () => {
+  isShowForm.value = true;
+};
 
-const handleClick = () => {
-  console.log("Clicked");
+// Hàm đóng form
+const handleCloseForm = () => {
+  isShowForm.value = false;
 };
 </script>
 
-<style>
-i {
-  font-size: 24px;
-  color: blue;
-}
-</style>
+<style></style>
